@@ -1,0 +1,45 @@
+
+workflowExternalId: wf_icapi_data_pipeline
+version: '1'
+
+workflowDefinition:
+  description: ICAPI data pipeline workflow
+
+  tasks:
+    - externalId: create_asset_hierarchy_task
+      name: Create asset hierarchy
+      type: transformation
+      parameters:
+        transformation:
+          externalId: create_asset_hierarchy
+          concurrencyPolicy: fail
+      retries: 3
+      timeout: 3600
+      onFailure: abortWorkflow
+
+    - externalId: contextualize_ts_assets_task
+      name: Contextualize time series assets
+      type: transformation
+      parameters:
+        transformation:
+          externalId: contextualize_ts_assets
+          concurrencyPolicy: fail
+      retries: 3
+      timeout: 3600
+      onFailure: abortWorkflow
+      dependsOn:
+        - externalId: create_asset_hierarchy_task
+
+    - externalId: icapi_datapoints_extractor_task
+      name: Extract ICAPI data points
+      type: function
+      parameters:
+        function:
+          externalId: REPLACE_WITH_ACTUAL_FUNCTION_EXTERNAL_ID
+          data: {}
+        isAsyncComplete: false
+      retries: 3
+      timeout: 3600
+      onFailure: abortWorkflow
+      dependsOn:
+        - externalId: contextualize_ts_assets_task
