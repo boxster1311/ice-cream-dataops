@@ -35,7 +35,7 @@ workflowDefinition:
       type: function
       parameters:
         function:
-          externalId: REPLACE_WITH_ACTUAL_FUNCTION_EXTERNAL_ID
+          externalId: icapi_datapoints_extractor
           data: {}
         isAsyncComplete: false
       retries: 3
@@ -43,3 +43,17 @@ workflowDefinition:
       onFailure: abortWorkflow
       dependsOn:
         - externalId: contextualize_ts_assets_task
+
+    - externalId: oee_timeseries_task
+      name: oee_timeseries
+      type: function
+      parameters:
+        function:
+          externalId: oee_timeseries
+          data: {}
+        isAsyncComplete: false
+      retries: 3
+      timeout: 3600
+      onFailure: abortWorkflow
+      dependsOn:
+        - externalId: icapi_datapoints_extractor_task
